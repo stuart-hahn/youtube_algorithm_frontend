@@ -1,11 +1,11 @@
 import React from 'react';
 
-import ListItem from './ListItem'
+import List from './List'
 
 function App() {
   return (
     <div className="App">
-      <ListItem />
+      <List />
     </div>
   );
 }
