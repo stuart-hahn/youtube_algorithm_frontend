@@ -1,7 +1,7 @@
 const data = {
     "publishedAt": "2021-03-08T13:00:31Z",
     "channelId": "UCxTQS1NdCohSn4Ih79rPFIg",
-    "title": "3D&#39;s For Productivity",
+    "title": "Productivity",
     "description": "If you have been following me for any amount of time you know that productivity and planning is my jam! I really tried to prioritize it because far too often we ...",
     "thumbnails": {
         "default": {

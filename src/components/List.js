@@ -1,7 +1,7 @@
 import React from 'react'
 import ListItem from './ListItem' 
 
-import data from "./data"
+import data from "../data"
 
 const List = () => {
     return <ListItem data={data} />
