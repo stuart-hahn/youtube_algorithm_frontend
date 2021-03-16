@@ -1,8 +1,9 @@
 import React from 'react'
 
-const ListItem = ({data}) => {
+const ListItem = ({ video }) => {
+    console.log(video)
     return ( 
-        <h1>{data.title}</h1>
+        <li>{video.snippet.title}</li>
     )
 }
 

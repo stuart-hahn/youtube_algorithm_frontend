@@ -19,7 +19,7 @@ function App() {
   return (
     <div className="App">
       <Search onSearchTermSubmit={onSearchTermSubmit} />
-      <List videos={videos} />
+      <ol><List videos={videos} /></ol>
     </div>
   );
 }
