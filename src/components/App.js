@@ -2,23 +2,24 @@ import React, { useState } from 'react';
 
 import youtube from '../apis/youtube'
 import Search from './Search';
+import List from './List'
 
 function App() {
 
-  const [items, setItems] = useState([])
+  const [videos, setVideos] = useState([])
 
   let onSearchTermSubmit = async (searchTerm) => {
     await youtube.get("/search", {
       params: {
         q: searchTerm
       }
-    }).then(res => setItems(res.data.items))
+    }).then(res => setVideos(res.data.items))
   }
 
   return (
     <div className="App">
       <Search onSearchTermSubmit={onSearchTermSubmit} />
-      <p>There are {items.length} items.</p>
+      <List videos={videos} />
     </div>
   );
 }
