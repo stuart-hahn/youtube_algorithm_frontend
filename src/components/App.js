@@ -7,19 +7,41 @@ import List from './List'
 function App() {
 
   const [videos, setVideos] = useState([])
+  const [videoIds, setVideoIds] = useState([])
 
   let onSearchTermSubmit = async (searchTerm) => {
-    await youtube.get("/search", {
+    const res = await youtube.get("/search", {
       params: {
-        q: searchTerm
+        q: searchTerm,
+        type: 'video',
+        part: 'snippet',
       }
-    }).then(res => setVideos(res.data.items))
+    })
+    
+    setVideoIds(res.data.items.map(video => video.id.videoId))
+
+    const videoRes = await youtube.get("/videos", {
+      params: {
+        part: [
+          'snippet',
+          'contentDetails',
+          'statistics'
+        ],
+        id: [
+           videoIds
+        ]
+      }
+    }
+    )
+
+    console.log(videoRes)
   }
 
   return (
     <div className="App">
       <Search onSearchTermSubmit={onSearchTermSubmit} />
-      <ol><List videos={videos} /></ol>
+      <p>There are {videoIds.length} videos.</p>
+      {/* <ol><List videos={videos} /></ol> */}
     </div>
   );
 }
