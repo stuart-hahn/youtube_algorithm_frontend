@@ -26,15 +26,13 @@ function App() {
       }
     })
 
-    setVideos(vidRes)
+    setVideos(vidRes.data.items)
   }
-
-  console.log(videos)
 
   return (
     <div className="App">
       <Search onSearchTermSubmit={onSearchTermSubmit} />
-      <p>hello</p>
+      <List videos={videos} />
     </div>
   );
 }
