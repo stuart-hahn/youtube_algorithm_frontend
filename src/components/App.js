@@ -7,7 +7,6 @@ import List from './List'
 function App() {
 
   const [videos, setVideos] = useState([])
-  const [topTen, setTopTen] = useState([])
 
   const onSearchTermSubmit = async (searchTerm) => {
     const res = await youtube.get("/search", {
@@ -38,13 +37,15 @@ function App() {
 
   const sortVideos = (videos) => {
     return videos.map(video => {
-      let viewCount = video.statistics.viewCount
-      let dislikeCount = video.statistics.dislikeCount
-      let likeCount = video.statistics.likeCount
+      let viewCount = parseInt(video.statistics.viewCount)
+      let dislikeCount = parseInt(video.statistics.dislikeCount) + 1
+      let likeCount = parseInt(video.statistics.likeCount)
 
-      let score = viewCount / (likeCount - dislikeCount)
+      let likeRatio = (dislikeCount / likeCount) * 100
+      let score = viewCount / likeRatio
 
       video.statistics.score = score
+      return video
     })
   }
 
