@@ -44,11 +44,11 @@ function App() {
 
       let score = viewCount / (likeCount - dislikeCount)
 
-      console.log(score)
+      video.statistics.score = score
     })
   }
 
-  if (videos.length > 1) {
+  if (videos.length > 0) {
     sortVideos(videos)
   }
 
