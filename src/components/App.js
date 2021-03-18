@@ -7,7 +7,6 @@ import List from './List'
 function App() {
 
   const [videos, setVideos] = useState([])
-  const [videoIds, setVideoIds] = useState([])
 
   let onSearchTermSubmit = async (searchTerm) => {
     const res = await youtube.get("/search", {
@@ -18,32 +17,27 @@ function App() {
       }
     })
     
-    setVideoIds(res.data.items.map(video => video.id.videoId))
+    const videoIds = await res.data.items.map(video => video.id.videoId).toString()
 
-    const videoRes = await youtube.get("/videos", {
+    const vidRes = await youtube.get("/videos", {
       params: {
-        part: [
-          'snippet',
-          'contentDetails',
-          'statistics'
-        ],
-        id: [
-           videoIds
-        ]
+        part: "snippet,contentDetails,statistics",
+        id: videoIds
       }
-    }
-    )
+    })
 
-    console.log(videoRes)
+    setVideos(vidRes)
   }
+
+  console.log(videos)
 
   return (
     <div className="App">
       <Search onSearchTermSubmit={onSearchTermSubmit} />
-      <p>There are {videoIds.length} videos.</p>
-      {/* <ol><List videos={videos} /></ol> */}
+      <p>hello</p>
     </div>
   );
 }
 
 export default App;
+
