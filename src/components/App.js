@@ -37,21 +37,26 @@ function App() {
 
   const sortVideos = (videos) => {
     return videos.map(video => {
-      let viewCount = parseInt(video.statistics.viewCount)
+      let viewCount = parseInt(video.statistics.viewCount) 
       let dislikeCount = parseInt(video.statistics.dislikeCount) + 1
       let likeCount = parseInt(video.statistics.likeCount)
 
       let likeRatio = (dislikeCount / likeCount) * 100
-      let score = viewCount / likeRatio
+      let score = likeRatio
 
       video.statistics.score = score
+      if (viewCount < 1000) {
+        video.statistics.score = 0
+      }
       return video
     })
   }
 
-  if (videos.length > 0) {
-    sortVideos(videos)
-  }
+  // if (videos.length > 0) {
+  //   sortVideos(videos)
+  // }
+
+  sortVideos(videos)
 
   return (
     <div className="App">
