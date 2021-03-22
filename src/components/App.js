@@ -7,7 +7,6 @@ import List from './List'
 function App() {
 
   const [videos, setVideos] = useState([])
-  const [channels, setChannels] = useState([])
 
   const onSearchTermSubmit = async (searchTerm) => {
     const res = await youtube.get("/search", {
@@ -18,8 +17,7 @@ function App() {
       }
     })
     
-    const videoIds = await res.data.items.map(video => video.id.videoId).toString()
-    const channelIds = await res.data.items.map(video => video.snippet.channelId).toString()
+    const videoIds = res.data.items.map(video => video.id.videoId).toString()
     
     const vidRes = await youtube.get("/videos", {
       params: {
@@ -28,42 +26,45 @@ function App() {
       }
     })
 
-    const chanRes = await youtube.get("/channels", {
-      params: {
-        part: "snippet,contentDetails,statistics",
-        id: channelIds
-      }
-    })
-
-    console.log(chanRes)
-
     setVideos(vidRes.data.items)
-    // setChannels(chanRes.data.items)
   }
 
-  // commentCount: "915019"
-  // dislikeCount: "863173"
-  // favoriteCount: "0"
-  // likeCount: "16488362"
-  // viewCount: "2804833356"
+  const getChannelInfo = (videos) => {
+    videos.map(async video => {
+      const channelId = video.snippet.channelId.toString()
+      const channelRes = await youtube.get("/channels", {
+        params: {
+          part: "snippet,contentDetails,statistics",
+          id: channelId
+        }
+      })
+      video.statistics.channelSubscriberCount = channelRes.data.items[0].statistics.subscriberCount || 0
+      return video
+    })
+  }
 
-  const sortVideos = (videos) => {
+  const sortVideos = async (videos) => {
     return videos.map(video => {
+
+      let subCount = parseInt(video.statistics.channelSubscriberCount)
       let viewCount = parseInt(video.statistics.viewCount) 
       let dislikeCount = parseInt(video.statistics.dislikeCount) + 1
       let likeCount = parseInt(video.statistics.likeCount)
 
+      let viewToSubRatio = (viewCount / subCount)
       let likeRatio = (dislikeCount / likeCount) * 100
-      let score = viewCount / likeRatio
+      let score = viewToSubRatio
+      console.log(viewToSubRatio)
 
       video.statistics.score = score
-      if (viewCount < 1000) {
+      if (viewCount < 1000 || viewToSubRatio === Infinity) {
         video.statistics.score = 0
       }
       return video
     })
   }
-
+  
+  getChannelInfo(videos)
   sortVideos(videos)
 
   return (
