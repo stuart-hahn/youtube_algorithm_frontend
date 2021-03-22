@@ -7,6 +7,7 @@ import List from './List'
 function App() {
 
   const [videos, setVideos] = useState([])
+  const [channels, setChannels] = useState([])
 
   const onSearchTermSubmit = async (searchTerm) => {
     const res = await youtube.get("/search", {
@@ -18,7 +19,8 @@ function App() {
     })
     
     const videoIds = await res.data.items.map(video => video.id.videoId).toString()
-
+    const channelIds = await res.data.items.map(video => video.snippet.channelId).toString()
+    
     const vidRes = await youtube.get("/videos", {
       params: {
         part: "snippet,contentDetails,statistics",
@@ -26,7 +28,17 @@ function App() {
       }
     })
 
+    const chanRes = await youtube.get("/channels", {
+      params: {
+        part: "snippet,contentDetails,statistics",
+        id: channelIds
+      }
+    })
+
+    console.log(chanRes)
+
     setVideos(vidRes.data.items)
+    // setChannels(chanRes.data.items)
   }
 
   // commentCount: "915019"
@@ -42,7 +54,7 @@ function App() {
       let likeCount = parseInt(video.statistics.likeCount)
 
       let likeRatio = (dislikeCount / likeCount) * 100
-      let score = likeRatio
+      let score = viewCount / likeRatio
 
       video.statistics.score = score
       if (viewCount < 1000) {
@@ -51,10 +63,6 @@ function App() {
       return video
     })
   }
-
-  // if (videos.length > 0) {
-  //   sortVideos(videos)
-  // }
 
   sortVideos(videos)
 
