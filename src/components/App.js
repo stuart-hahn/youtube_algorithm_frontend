@@ -27,21 +27,24 @@ function App() {
     })
 
     setVideos(vidRes.data.items)
+
+    const getChannelInfo = (videos) => {
+      videos.map(async video => {
+        const channelId = video.snippet.channelId.toString()
+        const channelRes = await youtube.get("/channels", {
+          params: {
+            part: "snippet,contentDetails,statistics",
+            id: channelId
+          }
+        })
+        video.statistics.channelSubscriberCount = channelRes.data.items[0].statistics.subscriberCount || 0
+        return video
+      })
+    }
+
+    getChannelInfo(vidRes.data.items)
   }
 
-  const getChannelInfo = (videos) => {
-    videos.map(async video => {
-      const channelId = video.snippet.channelId.toString()
-      const channelRes = await youtube.get("/channels", {
-        params: {
-          part: "snippet,contentDetails,statistics",
-          id: channelId
-        }
-      })
-      video.statistics.channelSubscriberCount = channelRes.data.items[0].statistics.subscriberCount || 0
-      return video
-    })
-  }
 
   const sortVideos = async (videos) => {
     return videos.map(video => {
@@ -54,6 +57,7 @@ function App() {
       let viewToSubRatio = (viewCount / subCount)
       let likeRatio = (dislikeCount / likeCount) * 100
       let score = viewToSubRatio
+      console.log(viewCount, "/", subCount)
       console.log(viewToSubRatio)
 
       video.statistics.score = score
@@ -64,7 +68,6 @@ function App() {
     })
   }
   
-  getChannelInfo(videos)
   sortVideos(videos)
 
   return (
